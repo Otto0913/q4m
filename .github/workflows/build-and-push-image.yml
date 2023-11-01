@@ -27,6 +27,11 @@ jobs:
         os:
           - ubuntu-latest
           - macos-13
+        exclude:
+          - os: ubuntu-latest
+            platform: arm64
+          - os: macos-13
+            platform: amd64
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -34,6 +39,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Docker
+        if: runner.os == 'macOS'
         uses: crazy-max/ghaction-setup-docker@v2
 
       - name: Set up QEMU
@@ -49,9 +55,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set image name
+      - name: Set image name(bash)
+        if: runner.os == 'Linux'
         run: |
           echo "IMAGE_NAME=${REPOSITORY_NAME,,}" >>${GITHUB_ENV}
+
+      - name: Set image name(zsh)
+        if: runner.os == 'macOS'
+        run: |
+          echo "IMAGE_NAME=${REPOSITORY_NAME:l}" >>${GITHUB_ENV}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
