@@ -13,7 +13,6 @@ env:
 
 jobs:
   build-and-push-image:
-    runs-on: ubuntu-latest
     timeout-minutes: 720
     permissions:
       contents: read
@@ -22,15 +21,16 @@ jobs:
       matrix:
         mysql_version:
           - 8.0.28
-        platform:
-          - amd64
-          - arm64
+        include:
+          - platform: amd64
+            os: ubuntu-latest
+          - platform: arm64
+            os: macos-13
+    runs-on: ${{ matrix.os }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
