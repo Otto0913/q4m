@@ -52,15 +52,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set image name(bash)
-        if: runner.os == 'Linux'
+      - name: Set image name
         run: |
-          echo "IMAGE_NAME=${REPOSITORY_NAME,,}" >>${GITHUB_ENV}
-
-      - name: Set image name(zsh)
-        if: runner.os == 'macOS'
-        run: |
-          echo "IMAGE_NAME=${REPOSITORY_NAME:l}" >>${GITHUB_ENV}
+          echo "IMAGE_NAME=$(tr '[:upper:]' '[:lower:]' <<< $REPOSITORY_NAME)" >>${GITHUB_ENV}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
