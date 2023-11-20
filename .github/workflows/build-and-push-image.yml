@@ -13,6 +13,7 @@ env:
 
 jobs:
   build-and-push-image:
+    runs-on: self-hosted
     timeout-minutes: 720
     permissions:
       contents: read
@@ -24,23 +25,12 @@ jobs:
         platform:
           - amd64
           - arm64
-        os:
-          - ubuntu-latest
-          - macos-13
-        exclude:
-          - os: ubuntu-latest
-            platform: arm64
-          - os: macos-13
-            platform: amd64
-    runs-on: ${{ matrix.os }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Docker
-        if: runner.os == 'macOS'
-        uses: crazy-max/ghaction-setup-docker@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -54,7 +44,7 @@ jobs:
 
       - name: Set image name
         run: |
-          echo "IMAGE_NAME=$(tr '[:upper:]' '[:lower:]' <<< $REPOSITORY_NAME)" >>${GITHUB_ENV}
+          echo "IMAGE_NAME=${REPOSITORY_NAME,,}" >>${GITHUB_ENV}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
