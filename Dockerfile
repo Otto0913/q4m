@@ -26,20 +26,16 @@ RUN cd /tmp \
     && make install \
     && ldconfig
 
-# 必要であれば、以下からMySQLのバージョンを選択することも可能
-# https://github.com/kamipo/mysql-build/tree/master/share/mysql-build/definitions
-ENV MYSQL_VERSION 8.0.28
-ENV Q4M_VERSION q4m-mysql8
+ENV Q4M_PLUGIN q4m
 
 # install mysql-build + q4m plugin installer, build mysql + q4m, remove workdir
-#
-COPY ${Q4M_VERSION} /tmp/${Q4M_VERSION}
+COPY ./ /tmp/q4m
 RUN cd /tmp \
     && wget https://github.com/kamipo/mysql-build/archive/master.tar.gz \
     && tar xvzf master.tar.gz \
     && mv mysql-build-master /usr/local/mysql-build \
-    && mv /tmp/${Q4M_VERSION} /usr/local/mysql-build/share/mysql-build/plugins/${Q4M_VERSION} \
-    && /usr/local/mysql-build/bin/mysql-build -v ${MYSQL_VERSION} /usr/local/mysql ${Q4M_VERSION} \
+    && mv /tmp/${Q4M_PLUGIN} /usr/local/mysql-build/share/mysql-build/plugins/${Q4M_PLUGIN} \
+    && /usr/local/mysql-build/bin/mysql-build -v ${MYSQL_VERSION} /usr/local/mysql ${Q4M_PLUGIN} \
     && rm -rf /usr/local/mysql-build \
     && rm /tmp/master.tar.gz
 
@@ -50,7 +46,7 @@ RUN mkdir /var/lib/mysql \
     && chown -R mysql:mysql /var/lib/mysql
 
 # setup mysql
-COPY my-8.0.cnf /etc/mysql/my.cnf
+COPY docker/my.cnf /etc/mysql/my.cnf
 RUN mysqld --initialize-insecure --user=mysql \
     && mysql_ssl_rsa_setup \
     && mysqld --daemonize --skip-networking --user mysql --socket /tmp/mysql.sock \
