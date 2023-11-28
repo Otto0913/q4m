@@ -41,7 +41,7 @@ jobs:
 
       - name: Set image name
         run: |
-          echo "IMAGE_NAME=${REPOSITORY_NAME,,}" >>${GITHUB_ENV}
+          echo "IMAGE_NAME=`echo ${REPOSITORY_NAME} | tr '[A-Z]' '[a-z]'`" >>${GITHUB_ENV}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
