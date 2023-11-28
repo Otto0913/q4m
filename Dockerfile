@@ -27,6 +27,7 @@ RUN cd /tmp \
     && ldconfig
 
 ENV Q4M_PLUGIN q4m
+ARG MYSQL_VERSION
 
 # install mysql-build + q4m plugin installer, build mysql + q4m, remove workdir
 COPY ./ /tmp/q4m
@@ -34,10 +35,9 @@ RUN cd /tmp \
     && wget https://github.com/kamipo/mysql-build/archive/master.tar.gz \
     && tar xvzf master.tar.gz \
     && mv mysql-build-master /usr/local/mysql-build \
-    && mv /tmp/${Q4M_PLUGIN} /usr/local/mysql-build/share/mysql-build/plugins/${Q4M_PLUGIN} \
-    && /usr/local/mysql-build/bin/mysql-build -v ${MYSQL_VERSION} /usr/local/mysql ${Q4M_PLUGIN} \
-    && rm -rf /usr/local/mysql-build \
-    && rm /tmp/master.tar.gz
+    && mv /tmp/q4m/docker/${Q4M_PLUGIN} /usr/local/mysql-build/share/mysql-build/plugins/${Q4M_PLUGIN} \
+    && cd ~/ \
+    && /usr/local/mysql-build/bin/mysql-build -v ${MYSQL_VERSION} /usr/local/mysql ${Q4M_PLUGIN}
 
 # user, group
 RUN mkdir /var/lib/mysql \
