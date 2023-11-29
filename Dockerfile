@@ -37,7 +37,9 @@ RUN cd /tmp \
     && mv mysql-build-master /usr/local/mysql-build \
     && mv /tmp/q4m/docker/${Q4M_PLUGIN} /usr/local/mysql-build/share/mysql-build/plugins/${Q4M_PLUGIN} \
     && cd ~/ \
-    && /usr/local/mysql-build/bin/mysql-build -v ${MYSQL_VERSION} /usr/local/mysql ${Q4M_PLUGIN}
+    && /usr/local/mysql-build/bin/mysql-build -v ${MYSQL_VERSION} /usr/local/mysql ${Q4M_PLUGIN} \
+    && rm -rf /usr/local/mysql-build \
+    && rm /tmp/master.tar.gz
 
 # user, group
 RUN mkdir /var/lib/mysql \
