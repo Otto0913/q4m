@@ -7,24 +7,9 @@ ENV PATH /usr/local/mysql/bin:$PATH
 # https://dev.mysql.com/doc/refman/8.0/en/source-installation-prerequisites.html
 RUN apt-get update \
     && apt-get install -y perl \
-    && apt-get install -y wget cmake gcc g++ libncurses-dev libudev-dev dpkg-dev pkg-config bison \
+    && apt-get install -y wget cmake gcc g++ libncurses-dev libudev-dev dpkg-dev pkg-config bison libssl-dev rapidjson-dev git\
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-# install libssl 1.1
-# MySQLが3系に対応しておらず、jammyではlibssl-devは3系のみなので、ソースからインストールする
-# 以下のリンク先にあるバグチケットが解消されれば、libssl-devをインストールすることで解決可能
-# https://bugs.mysql.com/bug.php?id=102405
-# https://packages.ubuntu.com/jammy/libssl-dev
-ENV OPENSSL_VERSION 1.1.1o
-RUN cd /tmp \
-    && wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz \
-    && tar xvzf openssl-${OPENSSL_VERSION}.tar.gz \
-    && cd openssl-${OPENSSL_VERSION} \
-    && ./config \
-    && make \
-    && make install \
-    && ldconfig
 
 ENV Q4M_PLUGIN q4m
 ARG MYSQL_VERSION
@@ -32,7 +17,7 @@ ARG MYSQL_VERSION
 # install mysql-build + q4m plugin installer, build mysql + q4m, remove workdir
 COPY ./ /tmp/q4m
 RUN cd /tmp \
-    && wget https://github.com/kamipo/mysql-build/archive/master.tar.gz \
+    && wget https://github.com/Otto0913/mysql-build/archive/master.tar.gz \
     && tar xvzf master.tar.gz \
     && mv mysql-build-master /usr/local/mysql-build \
     && mv /tmp/q4m/docker/${Q4M_PLUGIN} /usr/local/mysql-build/share/mysql-build/plugins/${Q4M_PLUGIN} \
