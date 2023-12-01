@@ -7,7 +7,7 @@ ENV PATH /usr/local/mysql/bin:$PATH
 # https://dev.mysql.com/doc/refman/8.0/en/source-installation-prerequisites.html
 RUN apt-get update \
     && apt-get install -y perl \
-    && apt-get install -y wget cmake gcc g++ libncurses-dev libudev-dev dpkg-dev pkg-config bison libssl-dev rapidjson-dev\
+    && apt-get install -y wget cmake gcc g++ libncurses-dev libudev-dev dpkg-dev pkg-config bison libssl-dev rapidjson-dev git\
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
