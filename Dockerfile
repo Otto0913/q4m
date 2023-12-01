@@ -32,7 +32,7 @@ ARG MYSQL_VERSION
 # install mysql-build + q4m plugin installer, build mysql + q4m, remove workdir
 COPY ./ /tmp/q4m
 RUN cd /tmp \
-    && wget https://github.com/kamipo/mysql-build/archive/master.tar.gz \
+    && wget https://github.com/Otto0913/mysql-build/archive/master.tar.gz \
     && tar xvzf master.tar.gz \
     && mv mysql-build-master /usr/local/mysql-build \
     && mv /tmp/q4m/docker/${Q4M_PLUGIN} /usr/local/mysql-build/share/mysql-build/plugins/${Q4M_PLUGIN} \
